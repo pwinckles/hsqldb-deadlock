@@ -33,7 +33,8 @@ public final class Main {
 
             executor.submit(() -> {
                 log.info("Before query 1");
-                try (var c = newConnection()) {
+                try (var c = newConnection();
+                        var statement = c.createStatement()) {
                     c.setAutoCommit(false);
                     selectId("abc", c);
 
@@ -51,6 +52,7 @@ public final class Main {
                     });
 
                     future.get();
+                    statement.execute("COMMIT");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
